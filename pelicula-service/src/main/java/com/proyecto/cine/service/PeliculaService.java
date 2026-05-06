@@ -25,4 +25,20 @@ public class PeliculaService {
     public Pelicula save(Pelicula pelicula) {
         return peliculaRepository.save(pelicula);
     }
+    // buscar x ID
+    public Pelicula findById(Integer id) {
+        return peliculaRepository.findById(id).orElse(null);
+    }
+
+
+    // DELETE
+    public boolean eliminar(int id) {
+        if (peliculaRepository.existsById(id)) {
+            peliculaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+
+    }
 }
+
