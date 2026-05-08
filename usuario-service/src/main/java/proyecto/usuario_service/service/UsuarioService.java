@@ -2,6 +2,7 @@ package proyecto.usuario_service.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import proyecto.usuario_service.dto.UsuarioRequestDTO;
 import proyecto.usuario_service.dto.UsuarioResponseDTO;
@@ -18,6 +19,9 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     // Listar usuarios y convierte a DTO
     public List<UsuarioResponseDTO> listarTodos() {
         log.info("Consultando la lista de usuarios");
@@ -30,6 +34,7 @@ public class UsuarioService {
     // Guardar usuario (de request a response)
     public UsuarioResponseDTO guardar(UsuarioRequestDTO dto) {
         log.info("Registrando usuario con email: {}", dto.getEmail());
+
         if (usuarioRepository.existsByEmail(dto.getEmail())) {
             log.error("Fallo al registrar: El correo '{}' ya existe", dto.getEmail());
             throw new RuntimeException("El correo ya esta registrado");
@@ -37,10 +42,14 @@ public class UsuarioService {
         Usuario usuario = new Usuario();
         usuario.setNombre(dto.getNombre());
         usuario.setEmail(dto.getEmail());
-        usuario.setPassword(dto.getPassword()); //aqui falta encriptar contraseña creo
+
+        // encriptacion de la contraseña con bcrypt
+        String passwordCifrada = passwordEncoder.encode(dto.getPassword());
+        usuario.setPassword(passwordCifrada);
 
         Usuario guardado = usuarioRepository.save(usuario);
         log.info("Usuario creado exitosamente con ID: {}", guardado.getIdUsuario());
+
         return convertirADTO(guardado);
     }
 
