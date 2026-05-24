@@ -1,6 +1,7 @@
 package com.proyecto.cine.controller;
 
-import com.proyecto.cine.model.Pelicula;
+import com.proyecto.cine.dto.PeliculaRequestDTO;
+import com.proyecto.cine.dto.PeliculaResponseDTO;
 import com.proyecto.cine.service.PeliculaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,65 +18,47 @@ public class PeliculaController {
     @Autowired
     private PeliculaService peliculaService;
 
-    //listar pelis
+    //GET
     @GetMapping
-    public ResponseEntity<List<Pelicula>> listar() {
-        List<Pelicula> peliculas = peliculaService.findAll();
+    public ResponseEntity<List<PeliculaResponseDTO>> listar() {
+        List<PeliculaResponseDTO> peliculas = peliculaService.listarTodas();
         if (peliculas.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(peliculas);
+        return new ResponseEntity<>(peliculas, HttpStatus.OK);
     }
-    //crear nueva peli
-    @PostMapping
-    public ResponseEntity<Pelicula> guardar(@RequestBody Pelicula pelicula) {
-        Pelicula peliculaNueva = peliculaService.save(pelicula);
-        return ResponseEntity.status(HttpStatus.CREATED).body(peliculaNueva);
-    }
+    //buscar por ID
 
-    // buscar peli x id
     @GetMapping("/{id}")
-    public ResponseEntity<Pelicula> buscar(@Valid @PathVariable int id) {
-        Pelicula buscada = peliculaService.findById(id);
-
-        if(buscada == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(buscada, HttpStatus.OK);
+    public ResponseEntity<PeliculaResponseDTO> buscarPorId(@PathVariable Integer id) {
+        PeliculaResponseDTO pelicula = peliculaService.buscarPorId(id);
+        if (pelicula != null) {
+            return new ResponseEntity<>(pelicula, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    // actualizar peli
+    //POST
+    @PostMapping
+    public ResponseEntity<PeliculaResponseDTO> guardar(@Valid @RequestBody PeliculaRequestDTO dto) {
+        PeliculaResponseDTO nueva = peliculaService.guardar(dto);
+        return new ResponseEntity<>(nueva, HttpStatus.CREATED);
+    }
+    //PUT actualizar
     @PutMapping("/{id}")
-    public ResponseEntity<Pelicula> actualizar(@Valid @PathVariable int id, @Valid @RequestBody Pelicula peliculaDetalles) {
-        Pelicula peliculaExistente = peliculaService.findById(id);
-
-        if(peliculaExistente == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            peliculaExistente.setTitulo(peliculaDetalles.getTitulo());
-            peliculaExistente.setSinopsis(peliculaDetalles.getSinopsis());
-            peliculaExistente.setDuracionMinutos(peliculaDetalles.getDuracionMinutos());
-            peliculaExistente.setClasificacionEdad(peliculaDetalles.getClasificacionEdad());
-            peliculaExistente.setUrlPoster(peliculaDetalles.getUrlPoster());
-            peliculaExistente.setEstadoCartelera(peliculaDetalles.getEstadoCartelera());
-
-            Pelicula peliculaGuardada = peliculaService.save(peliculaExistente);
-            return new ResponseEntity<>(peliculaGuardada, HttpStatus.OK);
+    public ResponseEntity<PeliculaResponseDTO> actualizar(@PathVariable Integer id, @Valid @RequestBody PeliculaRequestDTO dto) {
+        PeliculaResponseDTO actualizada = peliculaService.actualizar(id, dto);
+        if (actualizada != null) {
+            return new ResponseEntity<>(actualizada, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-    // Eliminar peli
+    //DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@Valid @PathVariable int id) {
-        Pelicula peliculaExistente = peliculaService.findById(id);
-
-        if(peliculaExistente != null) {
-            peliculaService.eliminar(id);
-            return new ResponseEntity<>("Eliminado con exito", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("No se encontro la pelicula", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> eliminar(@PathVariable Integer id) {
+        if (peliculaService.eliminar(id)) {
+            return new ResponseEntity<>("Pelicula eliminada con exito", HttpStatus.OK);
         }
+        return new ResponseEntity<>("No se encontro la pelicula", HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PeliculaRepository extends JpaRepository<Pelicula, Integer> {
-    //aaaa
+
+    boolean existsByTitulo(String titulo);
 
     }
 
