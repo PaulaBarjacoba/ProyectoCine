@@ -3,6 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ProyectoCineFullstack.iml" filepath="$PROJECT_DIR$/.idea/ProyectoCineFullstack.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pelicula-service/pelicula-service.iml" filepath="$PROJECT_DIR$/pelicula-service/pelicula-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sala-service/sala-service.iml" filepath="$PROJECT_DIR$/sala-service/sala-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/snack-service/snack-service.iml" filepath="$PROJECT_DIR$/snack-service/snack-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/usuario-service/usuario-service.iml" filepath="$PROJECT_DIR$/usuario-service/usuario-service.iml" />
     </modules>
   </component>
 </project>

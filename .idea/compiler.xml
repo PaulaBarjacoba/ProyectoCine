@@ -8,22 +8,23 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="reserva-service" />
+        <module name="usuario-service" />
+        <module name="pelicula-service" />
+        <module name="sala-service" />
+        <module name="snack-service" />
+        <module name="eureka-server" />
       </profile>
-      <profile name="Annotation profile for usuario-service" enabled="true">
+      <profile name="Annotation profile for notificacion-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.46/lombok-1.18.46.jar" />
         </processorPath>
-        <module name="usuario-service" />
         <module name="funcion-service" />
         <module name="auth-service" />
-        <module name="snack-service" />
-        <module name="notificacion-service" />
-        <module name="pelicula-service" />
         <module name="asiento-service" />
-        <module name="sala-service" />
+        <module name="notificacion-service" />
       </profile>
     </annotationProcessing>
   </component>
@@ -31,6 +32,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="asiento-service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="eureka-server" options="-parameters" />
       <module name="funcion-service" options="-parameters" />
       <module name="notificacion-service" options="-parameters" />
       <module name="pelicula-service" options="-parameters" />
