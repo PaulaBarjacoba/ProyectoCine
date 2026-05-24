@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
-public class git stashUsuarioController {
+public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
