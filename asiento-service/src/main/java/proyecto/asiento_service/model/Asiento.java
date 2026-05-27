@@ -1,28 +1,25 @@
 package proyecto.asiento_service.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "asientos")
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Asiento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id_asiento")
+    private Integer idAsiento;
 
-    @Column(nullable = false, length = 2)
+    @Column(name = "fila", nullable = false, length = 2)
     private String fila;
 
-    @Column(nullable = false)
+    @Column(name = "numero", nullable = false)
     private Integer numero;
 
-    @Column(nullable = false, length = 20)
+    @Column(name = "estado", nullable = false, length = 20)
     private String estado;
 
     @Column(name = "id_sala", nullable = false)

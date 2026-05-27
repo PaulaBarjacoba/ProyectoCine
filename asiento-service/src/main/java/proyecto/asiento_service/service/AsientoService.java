@@ -1,5 +1,6 @@
 package proyecto.asiento_service.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import proyecto.asiento_service.dto.AsientoRequestDTO;
@@ -10,41 +11,85 @@ import proyecto.asiento_service.repository.AsientoRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class AsientoService {
 
     @Autowired
     private AsientoRepository asientoRepository;
 
-    // 1. Método para crear un asiento nuevo
-    public AsientoResponseDTO crearAsiento(AsientoRequestDTO requestDTO) {
-        try {
-            Asiento nuevoAsiento = new Asiento();
-            nuevoAsiento.setFila(requestDTO.getFila());
-            nuevoAsiento.setNumero(requestDTO.getNumero());
-            nuevoAsiento.setIdSala(requestDTO.getIdSala());
-            nuevoAsiento.setEstado("DISPONIBLE");
+    // POST - Crear asiento
+    public AsientoResponseDTO crearAsiento(AsientoRequestDTO dto) {
+        log.info("Creando asiento en la fila {} número {} para la sala con ID: {}", dto.getFila(), dto.getNumero(), dto.getIdSala());
 
-            Asiento asientoGuardado = asientoRepository.save(nuevoAsiento);
+        Asiento asiento = new Asiento();
+        asiento.setFila(dto.getFila());
+        asiento.setNumero(dto.getNumero());
+        asiento.setEstado(dto.getEstado());
+        asiento.setIdSala(dto.getIdSala());
 
-            return mapearAResponseDTO(asientoGuardado);
+        Asiento guardado = asientoRepository.save(asiento);
+        log.info("Asiento creado exitosamente con ID: {}", guardado.getIdAsiento());
 
-        } catch (Exception e) {
-            throw new RuntimeException("Ocurrió un error al guardar el asiento en la base de datos: " + e.getMessage());
-        }
+        return convertirADTO(guardado);
     }
 
+    // GET - Listar asientos por Sala
     public List<AsientoResponseDTO> obtenerAsientosPorSala(Integer idSala) {
-        List<Asiento> asientos = asientoRepository.findByIdSala(idSala);
-
-        return asientos.stream()
-                .map(this::mapearAResponseDTO)
+        log.info("Consultando la lista de asientos de la sala con ID: {}", idSala);
+        return asientoRepository.findByIdSala(idSala).stream()
+                .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
 
-    private AsientoResponseDTO mapearAResponseDTO(Asiento asiento) {
+    // GET - Buscar asiento por ID
+    public AsientoResponseDTO buscarPorId(Integer id) {
+        log.info("Buscando asiento con ID: {}", id);
+        return asientoRepository.findById(id)
+                .map(this::convertirADTO)
+                .orElseGet(() -> {
+                    log.warn("Asiento con ID {} no encontrado", id);
+                    return null;
+                });
+    }
+
+    // PUT - Actualizar asiento completo
+    public AsientoResponseDTO actualizar(Integer id, AsientoRequestDTO dto) {
+        log.info("Buscando asiento con ID {} para proceder a su actualización", id);
+        java.util.Optional<Asiento> optional = asientoRepository.findById(id);
+
+        if (optional.isPresent()) {
+            Asiento asientoExistente = optional.get();
+            asientoExistente.setFila(dto.getFila());
+            asientoExistente.setNumero(dto.getNumero());
+            asientoExistente.setEstado(dto.getEstado());
+            asientoExistente.setIdSala(dto.getIdSala());
+
+            Asiento actualizado = asientoRepository.save(asientoExistente);
+            log.info("Asiento ID {} actualizado exitosamente", id);
+            return convertirADTO(actualizado);
+        }
+
+        log.warn("No se pudo completar la actualización: Asiento con ID {} no encontrado", id);
+        return null;
+    }
+
+    // DELETE - Eliminar asiento
+    public boolean eliminar(Integer id) {
+        log.info("Eliminando asiento con ID: {}", id);
+        if (asientoRepository.existsById(id)) {
+            asientoRepository.deleteById(id);
+            log.info("Asiento ID {} eliminado correctamente", id);
+            return true;
+        }
+        log.error("Fallo al eliminar: El asiento con ID {} no existe en los registros", id);
+        return false;
+    }
+
+    // Metodo de mapeo manual interno de Entidad a DTO
+    private AsientoResponseDTO convertirADTO(Asiento asiento) {
         AsientoResponseDTO dto = new AsientoResponseDTO();
-        dto.setId(asiento.getId());
+        dto.setIdAsiento(asiento.getIdAsiento());
         dto.setFila(asiento.getFila());
         dto.setNumero(asiento.getNumero());
         dto.setEstado(asiento.getEstado());

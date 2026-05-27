@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AsientoResponseDTO {
-    private Long id;
+    private Integer idAsiento;
     private String fila;
     private Integer numero;
     private String estado;
