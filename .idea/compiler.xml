@@ -9,9 +9,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="reserva-service" />
         <module name="usuario-service" />
-        <module name="pelicula-service" />
-        <module name="sala-service" />
         <module name="snack-service" />
+        <module name="pelicula-service" />
+        <module name="asiento-service" />
+        <module name="sala-service" />
         <module name="eureka-server" />
       </profile>
       <profile name="Annotation profile for asiento-service" enabled="true">
