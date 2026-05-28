@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "asientos")
+@Table(name = "butacas")
 @Data
 public class Asiento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_asiento")
+    @Column(name = "id_butaca")
     private Integer idAsiento;
 
     @Column(name = "fila", nullable = false, length = 2)
