@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import proyecto.usuario_service.dto.UsuarioRequestDTO;
 import proyecto.usuario_service.dto.UsuarioResponseDTO;
 import proyecto.usuario_service.service.UsuarioService;
+import java.util.Map;
 
 import java.util.List;
 
@@ -46,6 +47,27 @@ public class UsuarioController {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // BUSCAR POR EMAIL (Para que OpenFeign lo consuma)
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(@PathVariable String email) {
+        UsuarioResponseDTO usuario = usuarioService.buscarPorEmail(email);
+
+        if (usuario != null) {
+            return new ResponseEntity<>(usuario, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    // ENDPOINT QUE RECIVE MAIL Y PASSWD
+    @PostMapping("/validar")
+    public ResponseEntity<Boolean> validarCredenciales(@RequestBody Map<String, String> credenciales) {
+        String email = credenciales.get("email");
+        String pass = credenciales.get("password");
+
+        boolean esValido = usuarioService.verificarPassword(email, pass);
+        return ResponseEntity.ok(esValido);
     }
 
     // ACTUALIZAR PUT

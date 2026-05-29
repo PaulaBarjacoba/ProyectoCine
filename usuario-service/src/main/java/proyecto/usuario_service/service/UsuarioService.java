@@ -27,6 +27,28 @@ public class UsuarioService {
 
     }
 
+    // Nuevo metodo para que Auth-Service pueda consultar por email
+    public UsuarioResponseDTO buscarPorEmail(String email) {
+        log.info("Buscando usuario por email: {}", email);
+        return usuarioRepository.findByEmail(email)
+                .map(usuario -> {
+                    UsuarioResponseDTO dto = convertirADTO(usuario);
+                    return dto;
+                })
+                .orElseGet(() -> {
+                    log.warn("Usuario con email {} no encontrado", email);
+                    return null;
+                });
+    }
+
+    public boolean verificarPassword(String email, String password) {
+        var optionalUsuario = usuarioRepository.findByEmail(email);
+        if (optionalUsuario.isPresent()) {
+            return optionalUsuario.get().getPassword().equals(password);
+        }
+        return false;
+    }
+
     // Guardar usuario (de request a response)
     public UsuarioResponseDTO guardar(UsuarioRequestDTO dto) {
         log.info("Registrando usuario con email: {}", dto.getEmail());
