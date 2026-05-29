@@ -26,6 +26,9 @@ public class PeliculaService {
                 .map(this::convertirADTO)
                 .collect(Collectors.toList());
     }
+
+    //traer las peliculas segun la categoria de edad
+
     //buscar x id
     public PeliculaResponseDTO buscarPorId(Integer id) {
         log.info("Buscando pelicula con ID: {}", id);

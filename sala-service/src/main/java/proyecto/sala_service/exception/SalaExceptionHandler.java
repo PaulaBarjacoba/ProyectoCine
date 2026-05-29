@@ -12,6 +12,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class SalaExceptionHandler {
 
+
     //atrapa errores validacion
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> manejarErroresDeValidacion(MethodArgumentNotValidException ex) {

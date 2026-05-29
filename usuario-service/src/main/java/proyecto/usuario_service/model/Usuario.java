@@ -1,6 +1,7 @@
 package proyecto.usuario_service.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false, length = 255)
+    @Size(min = 8, max = 100)
     private String password;
 
     @Column(name = "fecha_registro", updatable = false)

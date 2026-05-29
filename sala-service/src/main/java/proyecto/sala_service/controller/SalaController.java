@@ -1,6 +1,7 @@
 package proyecto.sala_service.controller;
 
 import jakarta.validation.Valid;
+import org.apache.hc.client5.http.ssl.HttpsSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class SalaController {
     @Autowired
     private SalaService salaService;
 
+
     //GET
     @GetMapping
     public ResponseEntity<List<SalaResponseDTO>> listar() {
@@ -35,6 +37,7 @@ public class SalaController {
         SalaResponseDTO nuevaSala = salaService.guardar(dto);
         return new ResponseEntity<>(nuevaSala, HttpStatus.CREATED);
     }
+
 
     //BUSCAR POR ID
 
