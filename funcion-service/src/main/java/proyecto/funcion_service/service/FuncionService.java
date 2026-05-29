@@ -28,46 +28,37 @@ public class FuncionService {
     public FuncionResponseDTO crearFuncion(FuncionRequestDTO request) {
         log.info("Iniciando creación de función para película ID: {}", request.getIdPelicula());
 
-        // 1. Validamos la película antes de guardar
-        PeliculaDTO pelicula = peliculaClient.getPeliculaById(request.getIdPelicula().longValue());
+        try {
+            PeliculaDTO pelicula = peliculaClient.getPeliculaById(request.getIdPelicula().longValue());
+            if (pelicula == null) {
+                throw new RuntimeException("La película con ID " + request.getIdPelicula() + " no existe.");
+            }
+        } catch (Exception e) {
+            log.error("Error al validar película: {}", e.getMessage());
+            throw new RuntimeException("No se pudo validar la película: servicio no disponible.");
+        }
 
-        // 2. Mapeo de DTO a Entidad
         Funcion funcion = new Funcion();
         funcion.setIdPelicula(request.getIdPelicula());
         funcion.setIdSala(request.getIdSala());
         funcion.setFechaHora(request.getFechaHora());
         funcion.setPrecioBase(request.getPrecioBase());
 
-        // 3. Guardado
         Funcion saved = funcionRepository.save(funcion);
-
         log.info("Función creada exitosamente con ID: {}", saved.getIdFuncion());
         return mapToResponse(saved);
     }
 
-    // 2. Listar todas las funciones
     public List<FuncionResponseDTO> listarTodas() {
         return funcionRepository.findAll().stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
     }
 
-    // Metodo auxiliar para mapear de Entidad a ResponseDTO
-    private FuncionResponseDTO mapToResponse(Funcion funcion) {
-        FuncionResponseDTO response = new FuncionResponseDTO();
-        response.setIdFuncion(funcion.getIdFuncion());
-        response.setIdPelicula(funcion.getIdPelicula());
-        response.setIdSala(funcion.getIdSala());
-        response.setFechaHora(funcion.getFechaHora());
-        response.setPrecioBase(funcion.getPrecioBase());
-        return response;
-    }
-
-
     public FuncionResponseDTO obtenerPorId(Long id) {
-        Funcion funcion = funcionRepository.findById(id)
+        return funcionRepository.findById(id)
+                .map(this::mapToResponse)
                 .orElseThrow(() -> new RuntimeException("Función no encontrada con ID: " + id));
-        return mapToResponse(funcion);
     }
 
     public FuncionResponseDTO actualizarFuncion(Long id, FuncionRequestDTO request) {
@@ -79,8 +70,7 @@ public class FuncionService {
         funcionExistente.setFechaHora(request.getFechaHora());
         funcionExistente.setPrecioBase(request.getPrecioBase());
 
-        Funcion actualizada = funcionRepository.save(funcionExistente);
-        return mapToResponse(actualizada);
+        return mapToResponse(funcionRepository.save(funcionExistente));
     }
 
     public void eliminarFuncion(Long id) {
@@ -88,5 +78,15 @@ public class FuncionService {
             throw new RuntimeException("No se puede eliminar, ID no encontrado: " + id);
         }
         funcionRepository.deleteById(id);
+    }
+
+    private FuncionResponseDTO mapToResponse(Funcion funcion) {
+        FuncionResponseDTO response = new FuncionResponseDTO();
+        response.setIdFuncion(funcion.getIdFuncion());
+        response.setIdPelicula(funcion.getIdPelicula());
+        response.setIdSala(funcion.getIdSala());
+        response.setFechaHora(funcion.getFechaHora());
+        response.setPrecioBase(funcion.getPrecioBase());
+        return response;
     }
 }
