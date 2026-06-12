@@ -14,6 +14,6 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API Pelicula - Sistema de Cine")
                         .version("1.0")
-                        .description("Documentación de los endpoints para la gestión de la cartelera, géneros y duraciones de las películas."));
+                        .description("Documentación de los endpoints para la gestión de la cartelera, géneros y duraciones de las peliculas."));
     }
 }
