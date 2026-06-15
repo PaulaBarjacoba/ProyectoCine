@@ -10,7 +10,10 @@ import proyecto.usuario_service.dto.UsuarioRequestDTO;
 import proyecto.usuario_service.dto.UsuarioResponseDTO;
 import proyecto.usuario_service.service.UsuarioService;
 import java.util.Map;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
@@ -22,6 +25,9 @@ public class UsuarioController {
 
     // GET
     @GetMapping
+    @Operation(summary = "Obtener todos los usuarios", description = "Retorna una lista completa de todos los usuarios registrados en el sistema")
+    @ApiResponse(responseCode = "200", description = "Consulta exitosa, se entrega la lista de usuarios")
+    @ApiResponse(responseCode = "204", description = "Consulta exitosa, pero no hay usuarios registrados")
     public ResponseEntity<List<UsuarioResponseDTO>> listar() {
         List<UsuarioResponseDTO> usuarios = usuarioService.listarTodos();
 
@@ -34,14 +40,21 @@ public class UsuarioController {
 
     // CREAR POST
     @PostMapping
+    @Operation(summary = "Registrar un nuevo usuario", description = "Permite agregar un usuario nuevo enviando sus datos en el body")
+    @ApiResponse(responseCode = "201", description = "Usuario creado y guardado con éxito")
     public ResponseEntity<UsuarioResponseDTO> guardar(@Valid @RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO nuevoUsuario = usuarioService.guardar(dto);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
 
-    //BUSCAR POR ID
+    // BUSCAR POR ID
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> buscarPorId(@PathVariable Integer id) {
+    @Operation(summary = "Buscar usuario por ID", description = "Obtiene los detalles de un usuario específico según su identificador único")
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado con éxito")
+    @ApiResponse(responseCode = "404", description = "El usuario no existe en la base de datos")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorId(
+            @Parameter(description = "ID numérico del usuario a consultar") @PathVariable Integer id) {
+
         UsuarioResponseDTO usuario = usuarioService.buscarPorId(id);
         if (usuario != null) {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
@@ -51,18 +64,26 @@ public class UsuarioController {
 
     // BUSCAR POR EMAIL (Para que OpenFeign lo consuma)
     @GetMapping("/email/{email}")
-    public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(@PathVariable String email) {
-        UsuarioResponseDTO usuario = usuarioService.buscarPorEmail(email);
+    @Operation(summary = "Buscar usuario por Email (Uso interno)", description = "Endpoint utilizado principalmente por OpenFeign para validar la existencia de usuarios mediante su correo")
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente")
+    @ApiResponse(responseCode = "404", description = "No se encontró ningún usuario con ese correo")
+    public ResponseEntity<UsuarioResponseDTO> buscarPorEmail(
+            @Parameter(description = "Correo electrónico exacto del usuario") @PathVariable String email) {
 
+        UsuarioResponseDTO usuario = usuarioService.buscarPorEmail(email);
         if (usuario != null) {
             return new ResponseEntity<>(usuario, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // ENDPOINT QUE RECIVE MAIL Y PASSWD
+    // ENDPOINT QUE RECIBE MAIL Y PASSWD
     @PostMapping("/validar")
-    public ResponseEntity<Boolean> validarCredenciales(@RequestBody Map<String, String> credenciales) {
+    @Operation(summary = "Validar credenciales de acceso", description = "Verifica si el email y la contraseña coinciden para permitir la autenticación")
+    @ApiResponse(responseCode = "200", description = "Retorna true si las credenciales son válidas, o false si son incorrectas")
+    public ResponseEntity<Boolean> validarCredenciales(
+            @Parameter(description = "Mapa JSON conteniendo las claves 'email' y 'password'") @RequestBody Map<String, String> credenciales) {
+
         String email = credenciales.get("email");
         String pass = credenciales.get("password");
 
@@ -72,9 +93,14 @@ public class UsuarioController {
 
     // ACTUALIZAR PUT
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDTO> actualizar(@Valid @PathVariable int id, @Valid @RequestBody UsuarioRequestDTO dto) {
-        UsuarioResponseDTO actualizado = usuarioService.actualizar(id, dto);
+    @Operation(summary = "Actualizar datos del usuario", description = "Modifica la información de un usuario existente en la base de datos")
+    @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
+    @ApiResponse(responseCode = "404", description = "El usuario que se intenta actualizar no existe")
+    public ResponseEntity<UsuarioResponseDTO> actualizar(
+            @Parameter(description = "ID del usuario a modificar") @PathVariable int id,
+            @Valid @RequestBody UsuarioRequestDTO dto) {
 
+        UsuarioResponseDTO actualizado = usuarioService.actualizar(id, dto);
         if (actualizado == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
@@ -84,12 +110,16 @@ public class UsuarioController {
 
     // DELETE
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@Valid @PathVariable int id) {
+    @Operation(summary = "Eliminar un usuario", description = "Borra físicamente a un usuario del sistema mediante su ID")
+    @ApiResponse(responseCode = "200", description = "Mensaje confirmando la eliminación exitosa")
+    @ApiResponse(responseCode = "400", description = "El usuario no pudo ser eliminado porque no fue encontrado")
+    public ResponseEntity<String> eliminar(
+            @Parameter(description = "ID del usuario a eliminar") @PathVariable int id) {
+
         if (usuarioService.eliminar(id)) {
             return new ResponseEntity<>("Usuario eliminado con exito", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("No se encontro el usuario", HttpStatus.BAD_REQUEST);
         }
     }
-
 }
