@@ -51,6 +51,12 @@ public class SnackService {
         snackRepository.delete(snackExistente);
     }
 
-
-
+    public void reducirStock(Integer id, Integer cantidad) {
+        Snack snack = buscarPorId(id);
+        if (snack.getStockDisponible() < cantidad) {
+            throw new RuntimeException("Stock insuficiente para el snack: " + snack.getNombreProducto() + ". Stock disponible: " + snack.getStockDisponible() + ", solicitado: " + cantidad);
+        }
+        snack.setStockDisponible(snack.getStockDisponible() - cantidad);
+        snackRepository.save(snack);
+    }
 }
