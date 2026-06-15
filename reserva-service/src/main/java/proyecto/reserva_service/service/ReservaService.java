@@ -53,7 +53,7 @@ public class ReservaService {
         }
 
         // tan caras las entradas
-        double precioPorEntrada = 6700.0;
+        double precioPorEntrada = 6500.0;
         double totalAPagar = dto.getCantidadAsientos() * precioPorEntrada;
 
         // guardar en bd
@@ -111,7 +111,7 @@ public class ReservaService {
         return reservaRepository.findById(id).map(reserva -> {
             reserva.setCantidadAsientos(dto.getCantidadAsientos());
             //calcula el total
-            reserva.setTotalPago(dto.getCantidadAsientos() * 6700.0);
+            reserva.setTotalPago(dto.getCantidadAsientos() * 6500.0);
 
             Reserva actualizada = reservaRepository.save(reserva);
             log.info("Reserva ID {} actualizada con éxito", id);
