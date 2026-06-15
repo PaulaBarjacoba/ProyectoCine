@@ -84,6 +84,19 @@ public class SnackController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Devuelve 204 No Content
     }
 
+    // PUT reducir-stock
+    @PutMapping("/{id}/reducir-stock")
+    @Operation(summary = "Reducir stock de un snack", description = "Reduce el stock disponible de un snack por la cantidad indicada")
+    @ApiResponse(responseCode = "200", description = "Stock reducido exitosamente")
+    @ApiResponse(responseCode = "400", description = "Stock insuficiente o datos incorrectos")
+    @ApiResponse(responseCode = "404", description = "El snack no existe")
+    public ResponseEntity<Void> reducirStock(
+            @Parameter(description = "ID del snack a actualizar") @PathVariable Integer id,
+            @Parameter(description = "Cantidad a restar del stock") @RequestParam Integer cantidad) {
+        snackService.reducirStock(id, cantidad);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     private Snack convertirAEntidad(SnackRequestDTO dto) {
         Snack snack = new Snack();
         snack.setNombreProducto(dto.getNombreProducto());
