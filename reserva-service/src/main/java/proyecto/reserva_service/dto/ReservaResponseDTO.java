@@ -2,7 +2,7 @@ package proyecto.reserva_service.dto;
 
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 public class ReservaResponseDTO {
@@ -12,7 +12,7 @@ public class ReservaResponseDTO {
     private Integer idPelicula;
     private Integer idSala;
     private Integer idFuncion;
-    private LocalDate fechaReserva;
+    private LocalDateTime fechaReserva;
     private Integer cantidadAsientos;
     private Double totalPago;
     private String estadoReserva;

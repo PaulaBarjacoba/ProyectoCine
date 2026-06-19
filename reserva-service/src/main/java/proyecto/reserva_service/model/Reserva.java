@@ -4,7 +4,7 @@ package proyecto.reserva_service.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -30,13 +30,13 @@ public class Reserva {
     @Column(name = "cantidad_asientos")
     private Integer cantidadAsientos;
 
-    @Column(name = "total")
+    @Column(name = "total", columnDefinition = "DECIMAL(10,2)")
     private Double totalPago;
 
-    @Column(name = "estado_reserva")
+    @Column(name = "estado")
     private String estadoReserva = "CONFIRMADA";
 
     @Column(name = "fecha_reserva")
-    private LocalDate fechaReserva = LocalDate.now();
+    private LocalDateTime fechaReserva = LocalDateTime.now();
 
 }

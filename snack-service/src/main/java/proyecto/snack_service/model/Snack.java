@@ -19,7 +19,7 @@ public class Snack {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "precio_unitario", nullable = false)
+    @Column(name = "precio_unitario", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double precioUnitario;
 
     @Column(name = "categoria", length = 50)

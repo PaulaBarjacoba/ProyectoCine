@@ -15,7 +15,7 @@ import proyecto.reserva_service.dto.ReservaResponseDTO;
 import proyecto.reserva_service.model.Reserva;
 import proyecto.reserva_service.repository.ReservaRepository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,15 +52,17 @@ class ReservaServiceTest {
         reservaPrueba.setIdUsuario(2);
         reservaPrueba.setIdPelicula(10);
         reservaPrueba.setIdSala(3); // Sala IMAX
+        reservaPrueba.setIdFuncion(1);
         reservaPrueba.setCantidadAsientos(2);
         reservaPrueba.setTotalPago(13000.0); // 2 asientos * 6500.0
         reservaPrueba.setEstadoReserva("CONFIRMADA");
-        reservaPrueba.setFechaReserva(LocalDate.now());
+        reservaPrueba.setFechaReserva(LocalDateTime.now());
 
         requestDTO = new ReservaRequestDTO();
         requestDTO.setIdUsuario(2);
         requestDTO.setIdPelicula(10);
         requestDTO.setIdSala(3);
+        requestDTO.setIdFuncion(1);
         requestDTO.setCantidadAsientos(2);
     }
 

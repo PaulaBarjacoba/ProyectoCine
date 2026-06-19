@@ -151,7 +151,10 @@ USE db_reservas;
 CREATE TABLE IF NOT EXISTS reservas (
     id_reserva INT AUTO_INCREMENT PRIMARY KEY,
     id_usuario INT NOT NULL,
+    id_pelicula INT NOT NULL,
+    id_sala INT NOT NULL,
     id_funcion INT NOT NULL,
+    cantidad_asientos INT NOT NULL,
     fecha_reserva DATETIME DEFAULT CURRENT_TIMESTAMP,
     total DECIMAL(10,2) NOT NULL,
     estado VARCHAR(50) DEFAULT 'CONFIRMADA'
