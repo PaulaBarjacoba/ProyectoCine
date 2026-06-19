@@ -61,6 +61,7 @@ public class ReservaService {
         reserva.setIdUsuario(dto.getIdUsuario());
         reserva.setIdPelicula(dto.getIdPelicula());
         reserva.setIdSala(dto.getIdSala());
+        reserva.setIdFuncion(dto.getIdFuncion());
         reserva.setCantidadAsientos(dto.getCantidadAsientos());
         reserva.setTotalPago(totalAPagar);
 
