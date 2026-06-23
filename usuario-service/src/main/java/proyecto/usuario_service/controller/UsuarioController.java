@@ -13,11 +13,13 @@ import java.util.Map;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
+@Tag(name = "API Usuarios", description = "API para la gestión de usuarios y perfiles en el sistema de cine")
 public class UsuarioController {
 
     @Autowired
@@ -42,7 +44,9 @@ public class UsuarioController {
     @PostMapping
     @Operation(summary = "Registrar un nuevo usuario", description = "Permite agregar un usuario nuevo enviando sus datos en el body")
     @ApiResponse(responseCode = "201", description = "Usuario creado y guardado con éxito")
-    public ResponseEntity<UsuarioResponseDTO> guardar(@Valid @RequestBody UsuarioRequestDTO dto) {
+    @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos o correo ya registrado")
+    public ResponseEntity<UsuarioResponseDTO> guardar(
+            @Parameter(description = "DTO con los datos del usuario a registrar") @Valid @RequestBody UsuarioRequestDTO dto) {
         UsuarioResponseDTO nuevoUsuario = usuarioService.guardar(dto);
         return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
     }
@@ -81,6 +85,7 @@ public class UsuarioController {
     @PostMapping("/validar")
     @Operation(summary = "Validar credenciales de acceso", description = "Verifica si el email y la contraseña coinciden para permitir la autenticación")
     @ApiResponse(responseCode = "200", description = "Retorna true si las credenciales son válidas, o false si son incorrectas")
+    @ApiResponse(responseCode = "400", description = "Mapa de credenciales mal formado o incompleto")
     public ResponseEntity<Boolean> validarCredenciales(
             @Parameter(description = "Mapa JSON conteniendo las claves 'email' y 'password'") @RequestBody Map<String, String> credenciales) {
 
@@ -98,7 +103,7 @@ public class UsuarioController {
     @ApiResponse(responseCode = "404", description = "El usuario que se intenta actualizar no existe")
     public ResponseEntity<UsuarioResponseDTO> actualizar(
             @Parameter(description = "ID del usuario a modificar") @PathVariable int id,
-            @Valid @RequestBody UsuarioRequestDTO dto) {
+            @Parameter(description = "DTO con los datos actualizados del usuario") @Valid @RequestBody UsuarioRequestDTO dto) {
 
         UsuarioResponseDTO actualizado = usuarioService.actualizar(id, dto);
         if (actualizado == null) {
