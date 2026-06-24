@@ -16,7 +16,7 @@ public class Funcion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idFuncion;
+    private Integer idFuncion;
 
     @Column(name = "id_pelicula", nullable = false)
     private Integer idPelicula;

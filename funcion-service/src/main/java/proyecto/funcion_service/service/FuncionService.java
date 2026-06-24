@@ -55,13 +55,13 @@ public class FuncionService {
                 .collect(Collectors.toList());
     }
 
-    public FuncionResponseDTO obtenerPorId(Long id) {
+    public FuncionResponseDTO obtenerPorId(Integer id) {
         return funcionRepository.findById(id)
                 .map(this::mapToResponse)
                 .orElseThrow(() -> new RuntimeException("Función no encontrada con ID: " + id));
     }
 
-    public FuncionResponseDTO actualizarFuncion(Long id, FuncionRequestDTO request) {
+    public FuncionResponseDTO actualizarFuncion(Integer id, FuncionRequestDTO request) {
         Funcion funcionExistente = funcionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Función no encontrada con ID: " + id));
 
@@ -73,7 +73,7 @@ public class FuncionService {
         return mapToResponse(funcionRepository.save(funcionExistente));
     }
 
-    public void eliminarFuncion(Long id) {
+    public void eliminarFuncion(Integer id) {
         if (!funcionRepository.existsById(id)) {
             throw new RuntimeException("No se puede eliminar, ID no encontrado: " + id);
         }
