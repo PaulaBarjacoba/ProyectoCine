@@ -25,6 +25,6 @@ public class DetalleOrden {
     @Column(name = "cantidad", nullable = false)
     private Integer cantidad;
 
-    @Column(name = "subtotal", nullable = false)
+    @Column(name = "subtotal", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double subtotal;
 }

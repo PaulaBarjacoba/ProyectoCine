@@ -49,7 +49,7 @@ public class FuncionController {
     @ApiResponse(responseCode = "404", description = "La función a actualizar no fue encontrada")
     @ApiResponse(responseCode = "400", description = "Datos de actualización inválidos")
     public ResponseEntity<FuncionResponseDTO> actualizar(
-            @Parameter(description = "ID único de la función a modificar") @PathVariable Long id,
+            @Parameter(description = "ID único de la función a modificar") @PathVariable Integer id,
             @Parameter(description = "DTO con los datos actualizados de la función") @Valid @RequestBody FuncionRequestDTO request) {
         return ResponseEntity.ok(funcionService.actualizarFuncion(id, request));
     }
@@ -59,7 +59,7 @@ public class FuncionController {
     @ApiResponse(responseCode = "200", description = "Función encontrada exitosamente")
     @ApiResponse(responseCode = "404", description = "No existe ninguna función registrada con ese ID")
     public ResponseEntity<FuncionResponseDTO> obtenerPorId(
-            @Parameter(description = "ID único de la función a buscar") @PathVariable Long id) {
+            @Parameter(description = "ID único de la función a buscar") @PathVariable Integer id) {
         return ResponseEntity.ok(funcionService.obtenerPorId(id));
     }
 
@@ -68,7 +68,7 @@ public class FuncionController {
     @ApiResponse(responseCode = "204", description = "Función eliminada correctamente")
     @ApiResponse(responseCode = "404", description = "No se pudo eliminar: la función no existe")
     public ResponseEntity<Void> eliminar(
-            @Parameter(description = "ID único de la función a eliminar") @PathVariable Long id) {
+            @Parameter(description = "ID único de la función a eliminar") @PathVariable Integer id) {
         funcionService.eliminarFuncion(id);
         return ResponseEntity.noContent().build();
     }

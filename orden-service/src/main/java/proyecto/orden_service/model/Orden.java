@@ -28,7 +28,7 @@ public class Orden {
     @Column(name = "estado_preparacion", length = 50)
     private String estadoPreparacion = "RECIBIDA";
 
-    @Column(name = "total_orden", nullable = false)
+    @Column(name = "total_orden", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private Double totalOrden;
 
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL, orphanRemoval = true)

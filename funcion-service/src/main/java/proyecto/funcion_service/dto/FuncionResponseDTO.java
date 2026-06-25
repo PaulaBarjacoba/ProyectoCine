@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class FuncionResponseDTO {
-        private Long idFuncion;
+        private Integer idFuncion;
         private Integer idPelicula;
         private Integer idSala;
         private LocalDateTime fechaHora;
