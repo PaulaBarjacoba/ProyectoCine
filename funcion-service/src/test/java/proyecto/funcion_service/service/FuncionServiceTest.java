@@ -39,7 +39,7 @@ class FuncionServiceTest {
     @BeforeEach
     void setUp() {
         funcionPrueba = new Funcion();
-        funcionPrueba.setIdFuncion(1L);
+        funcionPrueba.setIdFuncion(1);
         funcionPrueba.setIdPelicula(10);
         funcionPrueba.setIdSala(2);
         funcionPrueba.setFechaHora(LocalDateTime.now());
@@ -64,7 +64,7 @@ class FuncionServiceTest {
         FuncionResponseDTO resultado = funcionService.crearFuncion(requestDTO);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getIdFuncion());
+        assertEquals(1, resultado.getIdFuncion());
         assertEquals(10, resultado.getIdPelicula());
         verify(peliculaClient, times(1)).getPeliculaById(10L);
         verify(funcionRepository, times(1)).save(any(Funcion.class));
@@ -85,13 +85,13 @@ class FuncionServiceTest {
 
     @Test
     void obtenerPorId_NoExiste() {
-        when(funcionRepository.findById(99L)).thenReturn(Optional.empty());
+        when(funcionRepository.findById(99)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            funcionService.obtenerPorId(99L);
+            funcionService.obtenerPorId(99);
         });
 
         assertEquals("Función no encontrada con ID: 99", exception.getMessage());
-        verify(funcionRepository, times(1)).findById(99L);
+        verify(funcionRepository, times(1)).findById(99);
     }
 }
