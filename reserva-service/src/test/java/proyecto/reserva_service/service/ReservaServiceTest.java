@@ -89,7 +89,8 @@ class ReservaServiceTest {
     void registrarReserva_TestExceptionSiUsuarioNoExiste() {
 
         // Simula que Usuario responde con error 404 NOT FOUND
-        FeignException.NotFound notFoundMock = mock(FeignException.NotFound.class);
+        feign.Request request = feign.Request.create(feign.Request.HttpMethod.GET, "/url", new java.util.HashMap<>(), null, new feign.RequestTemplate());
+        feign.FeignException.NotFound notFoundMock = new feign.FeignException.NotFound("not found", request, null, new java.util.HashMap<>());
         when(usuarioClient.buscarPorId(2)).thenThrow(notFoundMock);
 
 
