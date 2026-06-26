@@ -6,7 +6,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import proyecto.auth_service.dto.LoginRequestDTO;
+import proyecto.auth_service.dto.LoginResponseDTO;
 import proyecto.auth_service.service.AuthService;
+import proyecto.auth_service.util.JwtUtil;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -14,10 +19,27 @@ import proyecto.auth_service.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final JwtUtil jwtUtil;
 
     // Inyección por constructor
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, JwtUtil jwtUtil) {
         this.authService = authService;
+        this.jwtUtil = jwtUtil;
+    }
+
+    @PostMapping("/login")
+    @Operation(summary = "Iniciar sesión", description = "Valida las credenciales con usuario-service, obtiene roles locales y retorna el JWT")
+    @ApiResponse(responseCode = "200", description = "Autenticación exitosa, entrega del token JWT")
+    @ApiResponse(responseCode = "401", description = "Credenciales de acceso incorrectas")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+        String token = authService.login(loginRequest.getEmail(), loginRequest.getPassword());
+
+        if (token != null) {
+            List<String> roles = jwtUtil.extractRoles(token);
+            return ResponseEntity.ok(new LoginResponseDTO(token, loginRequest.getEmail(), roles));
+        }
+
+        return ResponseEntity.status(401).body("Credenciales incorrectas");
     }
 
     @GetMapping("/test-conexion/{email}")
@@ -32,4 +54,4 @@ public class AuthController {
         return existe ? ResponseEntity.ok("Conexión a usuario-service OK")
                 : ResponseEntity.status(404).body("No se encontró al usuario o falló la conexión");
     }
-}
+}
